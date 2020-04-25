@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.2.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.2.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.2.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.2.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.2.0',
+    sidebar: {"position":"right","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="Oauth2是什么​    OAuth（开放授权）是一个开放标准，允许用户授权第三方移动应用访问他们存储在另外的服务提供者上的信息，而不需要将用户名和密码提供给第三方移动应用或分享他们数据的所有内容，简单的了解可以看以下的博客 阮一峰的比喻：http://www.ruanyifeng.com/blog/2019/04/oauth_design.html阮一峰Oauth2的四种授权方式：http:/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Spring Security Oauth2 使用指南">
+<meta property="og:url" content="http://yoursite.com/post_test/Spring-Security-Oauth2-使用指南.html">
+<meta property="og:site_name" content="方强个人博客">
+<meta property="og:description" content="Oauth2是什么​    OAuth（开放授权）是一个开放标准，允许用户授权第三方移动应用访问他们存储在另外的服务提供者上的信息，而不需要将用户名和密码提供给第三方移动应用或分享他们数据的所有内容，简单的了解可以看以下的博客 阮一峰的比喻：http://www.ruanyifeng.com/blog/2019/04/oauth_design.html阮一峰Oauth2的四种授权方式：http:/">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-04-25T08:26:09.776Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Spring Security Oauth2 使用指南">
+<meta name="twitter:description" content="Oauth2是什么​    OAuth（开放授权）是一个开放标准，允许用户授权第三方移动应用访问他们存储在另外的服务提供者上的信息，而不需要将用户名和密码提供给第三方移动应用或分享他们数据的所有内容，简单的了解可以看以下的博客 阮一峰的比喻：http://www.ruanyifeng.com/blog/2019/04/oauth_design.html阮一峰Oauth2的四种授权方式：http:/">
+  <link rel="canonical" href="http://yoursite.com/post_test/Spring-Security-Oauth2-使用指南">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Spring Security Oauth2 使用指南 | 方强个人博客</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">方强个人博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+    
+
+    
+    
+      
+      
+    
+      
+      
+    
+      
+      
+    
+      
+      
+    
+      
+      
+    
+    
+
+  
+
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+    </div>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+    
+    
+    <div class="post-block page">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">Spring Security Oauth2 使用指南
+
+</h1>
+
+<div class="post-meta">
+  
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+        
+          <h2 id="Oauth2是什么"><a href="#Oauth2是什么" class="headerlink" title="Oauth2是什么"></a>Oauth2是什么</h2><p>​    OAuth（开放授权）是一个开放标准，允许用户授权第三方移动应用访问他们存储在另外的服务提供者上的信息，而不需要将用户名和密码提供给第三方移动应用或分享他们数据的所有内容，简单的了解可以看以下的博客</p>
+<p>阮一峰的比喻：<a href="http://www.ruanyifeng.com/blog/2019/04/oauth_design.html" target="_blank" rel="noopener">http://www.ruanyifeng.com/blog/2019/04/oauth_design.html</a><br>阮一峰Oauth2的四种授权方式：<a href="http://www.ruanyifeng.com/blog/2019/04/oauth-grant-types.html?utm_source=tuicool&amp;utm_medium=referral" target="_blank" rel="noopener">http://www.ruanyifeng.com/blog/2019/04/oauth-grant-types.html?utm_source=tuicool&amp;utm_medium=referral</a><br>Oauth2.0官网：<a href="https://oauth.net/2/" target="_blank" rel="noopener">https://oauth.net/2/</a></p>
+<h2 id="Oauth2解决了什么问题，为什么使用Oauth2"><a href="#Oauth2解决了什么问题，为什么使用Oauth2" class="headerlink" title="Oauth2解决了什么问题，为什么使用Oauth2"></a>Oauth2解决了什么问题，为什么使用Oauth2</h2><h3 id="为什么使用Oauth2"><a href="#为什么使用Oauth2" class="headerlink" title="为什么使用Oauth2"></a>为什么使用Oauth2</h3><p>​    我们假设你有一个“云笔记”产品，并提供了“云笔记服务”和“云相册服务”，此时用户需要在不同的设备（PC、Android、iPhone、TV、Watch）上去访问这些“资源”（笔记，图片）<br>那么用户如何才能访问属于自己的那部分资源呢？此时传统的做法就是提供自己的账号和密码给我们的“云笔记”，登录成功后就可以获取资源了。但这样的做法会有以下几个问题：</p>
+<ul>
+<li>“云笔记服务”和“云相册服务”会分别部署，难道我们要分别登录吗？</li>
+<li>如果有第三方应用程序想要接入我们的“云笔记”，难道需要用户提供账号和密码给第三方应用程序，让他记录后再访问我们的资源吗？</li>
+<li>用户如何限制第三方应用程序在我们“云笔记”的授权范围和使用期限？难道把所有资料都永久暴露给它吗？</li>
+<li>如果用户修改了密码收回了权限，那么所有第三方应用程序会全部失效。</li>
+<li>只要有一个接入的第三方应用程序遭到破解，那么用户的密码就会泄露，后果不堪设想。</li>
+</ul>
+<p>为了解决如上问题，oAuth 应用而生。</p>
+<h3 id="Oauh2使用的场景"><a href="#Oauh2使用的场景" class="headerlink" title="Oauh2使用的场景"></a>Oauh2使用的场景</h3><ol>
+<li><p>开放系统间授权</p>
+<ul>
+<li>社交联合登录</li>
+<li>开放API平台</li>
+</ul>
+</li>
+<li><p>现代微服务安全</p>
+<ul>
+<li>单页浏览器APP(H5/JS/无状态)</li>
+<li>无线原生App</li>
+<li>服务器端WebApp</li>
+<li>微服务和API间调用</li>
+</ul>
+</li>
+<li><p>企业内部应用认证和授权（IAM/SSO）</p>
+</li>
+</ol>
+<h2 id="Spring-Security-Oauth2授权服务器的配置"><a href="#Spring-Security-Oauth2授权服务器的配置" class="headerlink" title="Spring Security Oauth2授权服务器的配置"></a>Spring Security Oauth2授权服务器的配置</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 认证服务器注解和继承类</span></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@EnableAuthorizationServer</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AuthorizationServerConfiguration</span> <span class="keyword">extends</span> <span class="title">AuthorizationServerConfigurerAdapter</span> </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="配置配置客户端信息"><a href="#配置配置客户端信息" class="headerlink" title="配置配置客户端信息"></a>配置配置客户端信息</h3><p>通过配置<code>ClientDetailsServiceConfigurer</code>进行存储</p>
+<ul>
+<li><code>withClientDetails</code> 自定义客户端的存储，可模仿<code>JdbcClientDetailsService</code>，继承<code>ClientDetailsService</code>和<code>ClientRegistrationService</code></li>
+<li><code>inMemory</code> 存储在内存中</li>
+<li><code>jdbc</code>使用数据库存储，使用官方的数据库脚本<a href="https://github.com/spring-projects/spring-security-oauth/blob/master/spring-security-oauth2/src/test/resources/schema.sql在数据库创建对应的表" target="_blank" rel="noopener">https://github.com/spring-projects/spring-security-oauth/blob/master/spring-security-oauth2/src/test/resources/schema.sql在数据库创建对应的表</a></li>
+</ul>
+<p>客户端的重要属性是</p>
+<ul>
+<li><code>clientId</code>:(必需）客户端ID。</li>
+<li><code>secret</code>:(可信客户端需要）客户端密钥（如果有）。</li>
+<li><code>scope</code>：客户受限的范围。如果范围未定义或为空（默认值），则客户端不受范围限制。</li>
+<li><code>authorizedGrantTypes</code>：授权客户端使用的授权类型。默认值为空。</li>
+<li><code>authorities</code>：授予客户端的权限（常规Spring Security权限）。</li>
+</ul>
+<h3 id="配置端点服务和令牌服务"><a href="#配置端点服务和令牌服务" class="headerlink" title="配置端点服务和令牌服务"></a>配置端点服务和令牌服务</h3><p>通过配置<code>AuthorizationServerEndpointsConfigurer</code>来定义端点服务和令牌服务</p>
+<ul>
+<li><code>tokenEnhancer</code>端点返回属性的增强，此属性可以让修改返回的token信息，通常附加额外的自定义信息</li>
+<li><code>tokenStore</code> token的存储，此属性可以修改token存储的地方，推荐使用redis</li>
+<li><code>authenticationManager</code> 配置认证管理器，当你选择了资源所有者密码（password）授权类型的时候，请设置这个属性注入一个 <code>AuthenticationManager</code> 对象</li>
+<li><code>exceptionTranslator</code> 配置返回的异常信息，自定义错误处理</li>
+<li><code>reuseRefreshTokens</code>  设置refresh token是否可以重复使用</li>
+<li><code>userDetailsService</code> 配置集成认证用户服务，你设置了这个属性的话，那说明你有一个自己的 <code>UserDetailsService</code> 接口的实现，或者你可以把这个东西设置到全局域上面去（例如 <code>GlobalAuthenticationManagerConfigurer</code> 这个配置对象），当你设置了这个之后，那么 “refresh_token” 即刷新令牌授权类型模式的流程中就会包含一个检查，用来确保这个账号是否仍然有效，假如说你禁用了这个账户的话。</li>
+<li><code>authorizationCodeServices</code>这个属性是用来设置授权码服务的（即 <code>AuthorizationCodeServices</code> 的实例对象），主要用于 “authorization_code” 授权码类型模式</li>
+<li><code>implicitGrantService</code> 这个属性用于设置隐式授权模式，用来管理隐式授权模式的状态。</li>
+<li><code>tokenGranter</code>，当你设置了这个东西（即<code>TokenGranter</code>接口实现），那么授权将会交由你来完全掌控，并且会忽略掉上面的这几个属性，这个属性一般是用作拓展用途的，即标准的四种授权模式已经满足不了你的需求的时候，才会考虑使用这个。</li>
+</ul>
+<p><strong>授权端点的URL列表</strong></p>
+<p><code>AuthorizationServerEndpointsConfigurer</code> 这个配置对象(<code>AuthorizationServerConfigurer</code> 的一个回调配置项，见上的概述) 有一个叫做 <code>pathMapping()</code> 的方法用来配置端点URL链接，它有两个参数：</p>
+<ul>
+<li>第一个参数：String 类型的，这个端点URL的默认链接。</li>
+<li>第二个参数：String 类型的，你要进行替代的URL链接。</li>
+</ul>
+<p>以上的参数都将以 “/“ 字符为开始的字符串，框架的默认URL链接如下列表，可以作为这个 <code>pathMapping()</code> 方法的第一个参数：</p>
+<ul>
+<li><code>/oauth/authorize</code>：授权端点。</li>
+<li><code>/oauth/token</code>：令牌端点。</li>
+<li><code>/oauth/confirm_access</code>：用户确认授权提交端点。</li>
+<li><code>/oauth/error</code>：授权服务错误信息端点。</li>
+<li><code>/oauth/check_token</code>：用于资源服务访问的令牌解析端点。</li>
+<li><code>/oauth/token_key</code>：提供公有密匙的端点，如果你使用JWT令牌的话。</li>
+</ul>
+<h3 id="定义令牌端点上的安全性约束"><a href="#定义令牌端点上的安全性约束" class="headerlink" title="定义令牌端点上的安全性约束"></a>定义令牌端点上的安全性约束</h3><p>通过配置<code>AuthorizationServerSecurityConfigurer</code>来定义令牌端点上的约束</p>
+<p><code>allowFormAuthenticationForClients</code> 允许表单验证</p>
+<p><code>tokenKeyAccess</code> 访问<code>/oauth/token_key</code>的表达式（表达式可看<code>ExpressionUrlAuthorizationConfigurer</code>比如<code>premitAll()</code>允许任何人访问）</p>
+<p><code>checkTokenAccess</code> 访问<code>/oauth/check_token</code>验证token的表达式</p>
+<p><code>passwordEncoder</code> 客户端密码加密的方式</p>
+<p><code>addTokenEndpointAuthenticationFilter</code> 添加自定义身份验证筛选器</p>
+<h2 id="资源服务器的配置"><a href="#资源服务器的配置" class="headerlink" title="资源服务器的配置"></a>资源服务器的配置</h2><p>###　yaml的配置</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 服务认证鉴权</span></span><br><span class="line"><span class="attr">security:</span></span><br><span class="line"><span class="attr">  oauth2:</span></span><br><span class="line"><span class="attr">    resource:</span></span><br><span class="line"><span class="attr">      user-info-uri:</span> <span class="attr">http://api-gateway/uaa/current</span>		<span class="comment"># 用户信息url</span></span><br><span class="line"><span class="attr">      id:</span> <span class="string">$&#123;spring.application.name:&#125;</span>					<span class="comment"># 资源服务id</span></span><br><span class="line"><span class="attr">    client:</span></span><br><span class="line"><span class="attr">      clientId:</span> <span class="string">server</span>									<span class="comment"># 客户端id</span></span><br><span class="line"><span class="attr">      clientSecret:</span> <span class="string">server</span>								<span class="comment"># 客户端秘钥</span></span><br><span class="line"><span class="attr">      accessTokenUri:</span> <span class="attr">http://api-gateway/uaa/oauth/token</span>	<span class="comment"># 获取token端点</span></span><br><span class="line"><span class="attr">      grant-type:</span> <span class="string">client_credentials</span>						<span class="comment"># 授权类型（这里是客户端模式）</span></span><br><span class="line"><span class="attr">      scope:</span> <span class="string">server</span>											<span class="comment"># 授权范围</span></span><br></pre></td></tr></table></figure>
+        
+      </div>
+      
+      
+      
+    </div>
+    
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Mr Fang</p>
+  <div class="site-description motion-element" itemprop="description"></div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">2</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Oauth2是什么"><span class="nav-number">1.</span> <span class="nav-text">Oauth2是什么</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Oauth2解决了什么问题，为什么使用Oauth2"><span class="nav-number">2.</span> <span class="nav-text">Oauth2解决了什么问题，为什么使用Oauth2</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么使用Oauth2"><span class="nav-number">2.1.</span> <span class="nav-text">为什么使用Oauth2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Oauh2使用的场景"><span class="nav-number">2.2.</span> <span class="nav-text">Oauh2使用的场景</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Spring-Security-Oauth2授权服务器的配置"><span class="nav-number">3.</span> <span class="nav-text">Spring Security Oauth2授权服务器的配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#配置配置客户端信息"><span class="nav-number">3.1.</span> <span class="nav-text">配置配置客户端信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置端点服务和令牌服务"><span class="nav-number">3.2.</span> <span class="nav-text">配置端点服务和令牌服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#定义令牌端点上的安全性约束"><span class="nav-number">3.3.</span> <span class="nav-text">定义令牌端点上的安全性约束</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#资源服务器的配置"><span class="nav-number">4.</span> <span class="nav-text">资源服务器的配置</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Mr Fang</span>
+</div>
+  <div class="powered-by">个人专属 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">博客 – <a href="https://github.com/QiangFangcn" class="theme-link" rel="noopener" target="_blank">Mr Fang</a> v7.2.0</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+    <span class="post-meta-divider">|</span>
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+  
+  <script src="/js/schemes/muse.js?v=7.2.0"></script>
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.2.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
